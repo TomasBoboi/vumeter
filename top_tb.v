@@ -11,7 +11,7 @@ module top_tb;
 	
 	// UART TESTBENCH
 	
-	`define BIT_LEN 104166 /// 1/115200 -> 8.680 us
+	`define BIT_LEN 8680 /// 1/115200 -> 8.680 us
 	
 	reg rx;
 	wire [7:0]data;
@@ -187,7 +187,8 @@ module top_tb;
 
 	top DUT(.rx(rx),.clk(clk),.rst(rst),.data(data));
 	
-	/*
+	/* VGA TESTBENCH
+
     wire hs,vs;
     wire [2:0]RED,GREEN;
     wire [1:0]BLUE;
@@ -202,6 +203,8 @@ module top_tb;
     clk_divider #(.factor('d4)) clkdiv(.clk(clk),.rst(rst),.dclk(vga_clk));
 
 	vga_top #(.h_res(16),.v_res(9),.h_t_fp(2),.h_t_pw(3),.h_t_bp(1),.v_t_fp(5),.v_t_pw(2),.v_t_bp(7))
-        vgat(.clk(vga_clk),.rst(rst),.hs(hs),.vs(vs),.RED(RED),.GREEN(GREEN),.BLUE(BLUE));	*/
+        vgat(.clk(vga_clk),.rst(rst),.hs(hs),.vs(vs),.RED(RED),.GREEN(GREEN),.BLUE(BLUE));
+	
+	*/
 	
 endmodule

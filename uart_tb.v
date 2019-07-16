@@ -2,18 +2,19 @@
 
 module uart_tb;
 	
-	`define BIT_LEN 104166 // 1/9600 -> 104.166 us
+	`define BIT_LEN 8680 // 1/9600 -> 104.166 us
 	
 	reg rx,clk,rst;
 	wire [7:0]data;
 	wire uart_clk;
+	wire data_valid;
 
 	initial begin
 		clk = 1'b0;
 		forever #5 clk = ~clk;
 	end
 
-	clk_divider #(.factor('d652)) uartc(.clk(clk),.rst(rst),.dclk(uart_clk));
+	clk_divider #(.factor('d54)) uartc(.clk(clk),.rst(rst),.dclk(uart_clk));
 	
 	initial begin
 		rst = 1'b0;
@@ -93,6 +94,6 @@ module uart_tb;
 		
 	end
 	
-	uart DUT(.rx(rx),.clk(uart_clk),.rst(rst),.data(data));
+	uart DUT(.rx(rx),.clk(uart_clk),.rst(rst),.data(data),.data_valid(data_valid));
 
 endmodule

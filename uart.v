@@ -8,7 +8,8 @@
 
 module uart(
 	input rx,clk,rst,
-	output [7:0]data
+	output [7:0]data,
+	output data_valid
 );
 	
 	reg [2:0]state_ff;
@@ -16,6 +17,8 @@ module uart(
 	
 	reg [7:0]data_nxt;
 	reg [7:0]data_ff;
+
+	reg data_valid_ff,data_valid_nxt;
 	
 	wire [3:0]baud;
 	wire baud_en;
@@ -34,9 +37,8 @@ module uart(
 	wire [2:0]c;
 	mod8cntr counter2(.clk(clk),.rst(rst),.enable(cntr_en_nxt),.count(c));
 	
-	always @ (*)
+	always @(*)
 	begin
-		
 		state_nxt = state_ff;
 		data_nxt = data_ff;
 		baud_en_nxt = baud_en_ff;
@@ -50,7 +52,6 @@ module uart(
 			middle = {middle[2:1], rx};
 		else
 		begin
-
 		end
 			
 		case(state_ff)
@@ -61,6 +62,7 @@ module uart(
 					state_nxt = `S_IDLE;
 					baud_en_nxt = 1'b0;
 					cntr_en_nxt = 1'b0;
+					data_valid_nxt = 1'b0;
 				end
 				else
 				begin
@@ -74,13 +76,9 @@ module uart(
 				if(baud15)
 				begin
 					if (~vote)
-					begin
 						state_nxt = `S_RECEIVE;
-					end
 					else
-					begin
 						state_nxt = `S_IDLE;
-					end
 				end
 			end
 				
@@ -94,16 +92,13 @@ module uart(
 					begin
 						data_nxt[c] = vote;
 						state_nxt = `S_STOP;
+						data_valid_nxt = 1'b1;
 					end
 					else
-					begin
 						state_nxt = `S_RECEIVE;
-					end
 				end
 				else
-				begin
 					cntr_en_nxt = 1'b0;
-				end
 			end
 
 			`S_STOP:
@@ -111,13 +106,9 @@ module uart(
 				if(baud15)
 				begin
 					if(vote)
-					begin
 						state_nxt = `S_IDLE;
-					end
 					else
-					begin
 						state_nxt = `S_ERROR;
-					end
 				end
 				cntr_en_nxt = 1'b0;
 			end
@@ -125,35 +116,35 @@ module uart(
 			`S_ERROR:
 			begin
 				if(baud15)
-				begin
 					state_nxt = `S_IDLE;
-				end
 			end
 		endcase
-		
 	end
 	
-	always @ (posedge clk or posedge rst)
+	always @(posedge clk or posedge rst)
 	begin
-		
 		if(rst)
 		begin
 			state_ff <= `S_IDLE;
 			data_ff <= 8'd0;
 			baud_en_ff <= 1'b0;
 			cntr_en_ff <= 1'b0;
+			data_valid_ff <= 1'b0;
 		end
-		else begin
+		else
+		begin
 			state_ff <= state_nxt;
 			data_ff <= data_nxt;
 			baud_en_ff <= baud_en_nxt;
 			cntr_en_ff <= cntr_en_nxt;
+			data_valid_ff <= data_valid_nxt;
 		end
 	end
 	
 	assign data = data_ff;
 	assign baud_en = baud_en_ff;
 	assign cntr_en = cntr_en_ff;
+	assign data_valid = data_valid_ff;
 
 	assign baud15 = &baud;
 

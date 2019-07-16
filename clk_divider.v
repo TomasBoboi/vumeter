@@ -1,11 +1,11 @@
 `timescale 1ns/10ps
 
 module clk_divider(
-	input clk, rst,
+	input clk,rst,
 	output reg dclk
 );
 
-	parameter [9:0]factor = 10'd2;
+	parameter [9:0]factor = 10'd2; // default division factor = 2
 	
 	reg [9:0]counter;
 	

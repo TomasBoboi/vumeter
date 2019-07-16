@@ -9,14 +9,14 @@ module mod8cntr(
 	
 	assign count = count_ff;
 
-	always @ (*)
+	always @(*)
 	begin 
 		count_nxt = count_ff;
 		if(enable)
 			count_nxt = count_ff + 1'b1;
 	end
 
-	always @ (posedge clk or posedge rst)
+	always @(posedge clk or posedge rst)
 	begin
 		if(rst)
 			count_ff <= 'd0;

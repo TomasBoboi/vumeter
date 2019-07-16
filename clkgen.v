@@ -9,7 +9,7 @@ module clkgen(
 	/// UART CLOCK: 9600 * 16 = 153600 Hz - factor = 651
 	// baud 115200 - factor 54.25
 	
-	clk_divider #(.factor('d651)) UART_CLK_DIVIDER(.clk(clk),.rst(rst),.dclk(uart_clk));
+	clk_divider #(.factor('d54)) UART_CLK_DIVIDER(.clk(clk),.rst(rst),.dclk(uart_clk));
 	
 	/// VGA CLOCK: 25 MHZ (480x640) - factor = 4
 	
